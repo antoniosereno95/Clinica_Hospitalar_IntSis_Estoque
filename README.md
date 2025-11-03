@@ -47,4 +47,4 @@ O sistema está sendo ativamente desenvolvido por uma equipe de três estudantes
 
 ## 📝 Licença
 
-*Se for um projeto acadêmico e de código aberto, você pode adicionar uma licença, como MIT ou Apache.*
+*MIT License*
