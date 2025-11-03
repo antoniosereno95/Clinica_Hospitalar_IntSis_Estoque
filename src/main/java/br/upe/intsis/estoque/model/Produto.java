@@ -13,6 +13,8 @@ import java.time.LocalDate;
 
 //Entidade que representa um Produto ou Material dentro do estoque hospitalar.
 
+//Testado e Aprovado no Postman
+
 @Entity
 @Table(name = "produtos")
 @Data
