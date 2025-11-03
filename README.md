@@ -39,9 +39,9 @@ O sistema está sendo ativamente desenvolvido por uma equipe de três estudantes
 
 | Nome/Github | Função |
 | :--- | :--- |
-| **[Nome do Desenvolvedor 1]** | [@usuario_github_1] |
-| **[Nome do Desenvolvedor 2]** | [@usuario_github_2] |
-| **[Nome do Desenvolvedor 3]** | [@usuario_github_3] |
+| **[Antonio Sereno]** | [@antoniosereno95] |
+| **[Paulo]** | [@usuario_github_2] |
+| **[Rian Noronha]** | [@usuario_github_3] |
 
 ---
 
