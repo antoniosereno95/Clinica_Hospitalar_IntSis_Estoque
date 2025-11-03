@@ -8,9 +8,8 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDate;
 
 //Entidade que representa um Produto ou Material dentro do estoque hospitalar.
@@ -18,6 +17,8 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "produtos")
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Produto {
