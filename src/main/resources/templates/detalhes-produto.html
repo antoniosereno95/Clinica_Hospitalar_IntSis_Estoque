@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
+
+    <style>
+        /* Estilo para garantir a linha preta */
+        .table-bordered {
+            border: 1px solid black;
+        }
+        .table-bordered th, .table-bordered td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Detalhes do Produto: <span th:text="${produto.nome}"></span></h2>
+
+    <table class="table table-bordered table-striped">
+        <tbody>
+        <tr>
+            <th scope="row">ID</th>
+            <td th:text="${produto.id}">1</td>
+        </tr>
+        <tr>
+            <th scope="row">Nome</th>
+            <td th:text="${produto.nome}">Produto Exemplo</td>
+        </tr>
+        <tr>
+            <th scope="row">Código Interno (SKU)</th>
+            <td th:text="${produto.codigoInterno}">SKU-001</td>
+        </tr>
+        <tr>
+            <th scope="row">Descrição</th>
+            <td th:text="${produto.descricao}">Descrição detalhada do item.</td>
+        </tr>
+
+        <tr>
+            <th scope="row">Unidade de Medida</th>
+            <td th:text="${produto.unidadeMedida}">UNIDADE</td>
+        </tr>
+        <tr>
+            <th scope="row">Categoria</th>
+            <td th:text="${produto.categoria}">INSUMO</td>
+        </tr>
+
+        <tr>
+            <th scope="row">Lote</th>
+            <td th:text="${produto.lote}">ABC-12345</td>
+        </tr>
+
+        <tr>
+            <th scope="row">Data de Validade Padrão</th>
+            <td th:text="${produto.dataValidadePadrao}">2026-12-31</td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <a href="/produtos" class="btn btn-secondary">Voltar à Lista</a>
+
+</div>
+
+</body>
+</html>
