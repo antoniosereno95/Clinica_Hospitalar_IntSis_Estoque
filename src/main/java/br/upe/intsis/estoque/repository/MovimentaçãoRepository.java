@@ -1,4 +1,20 @@
 package br.upe.intsis.estoque.repository;
 
-public class MovimentaçãoRepository {
+import br.upe.intsis.estoque.model.Movimentacao;
+import br.upe.intsis.estoque.model.TipoMovimentacao;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Repository
+public interface MovimentaçãoRepository extends JpaRepository<Movimentacao, Long> {
+
+    List<Movimentacao> findByProdutoIdOrderByDataMovimentacaoDesc(Long produtoId);
+
+    List<Movimentacao> findByDataMovimentacaoBetween(LocalDateTime dataInicio, LocalDateTime dataFim);
+
+    List<Movimentacao> findByTipo(TipoMovimentacao tipo);
+
 }
