@@ -3,33 +3,28 @@ package br.upe.intsis.estoque.service;
 import br.upe.intsis.estoque.dto.MovimentacaoRequest;
 import br.upe.intsis.estoque.model.*;
 import br.upe.intsis.estoque.repository.EstoqueRepository;
-import br.upe.intsis.estoque.repository.MovimentaçãoRepository;
+import br.upe.intsis.estoque.repository.MovimentacaoRepository;
 import br.upe.intsis.estoque.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects; 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class MovimentacaoService {
 
-    @Autowired
-    private EstoqueRepository estoqueRepository; 
-
-    @Autowired
-    private ProdutoRepository produtoRepository; 
-
-    @Autowired
-    private MovimentaçãoRepository movimentacaoRepository; 
+    private final EstoqueRepository estoqueRepository;
+    private final ProdutoRepository produtoRepository;
+    private final MovimentacaoRepository movimentacaoRepository;
 
     @Transactional(rollbackFor = Exception.class)
-    public void registrarMovimentacao(MovimentacaoRequest dto) {
-
+    public Movimentacao registrarMovimentacao(MovimentacaoRequest dto) {
         Produto produto = produtoRepository.findById(dto.getProdutoId())
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + dto.getProdutoId()));
 
@@ -43,9 +38,7 @@ public class MovimentacaoService {
 
         Estoque estoque;
 
-
         if (dto.getTipo() == TipoMovimentacao.ENTRADA) {
-
             if (estoqueOpt.isPresent()) {
                 estoque = estoqueOpt.get();
                 estoque.setQuantidade(estoque.getQuantidade() + dto.getQuantidade());
@@ -57,18 +50,26 @@ public class MovimentacaoService {
                 estoque.setLocalizacao(dto.getLocalizacao());
                 estoque.setQuantidade(dto.getQuantidade());
             }
-
-        } else {
-
+        } else if (dto.getTipo() == TipoMovimentacao.AJUSTE) {
+            if (estoqueOpt.isPresent()) {
+                estoque = estoqueOpt.get();
+                estoque.setQuantidade(dto.getQuantidade());
+            } else {
+                estoque = new Estoque();
+                estoque.setProduto(produto);
+                estoque.setLote(dto.getLote());
+                estoque.setDataValidade(dto.getDataValidade());
+                estoque.setLocalizacao(dto.getLocalizacao());
+                estoque.setQuantidade(dto.getQuantidade());
+            }
+        } else { // TipoMovimentacao.SAIDA ou outros
             if (estoqueOpt.isEmpty()) {
                 throw new EntityNotFoundException("Estoque não encontrado para este produto/lote/validade/localização.");
             }
-
             estoque = estoqueOpt.get();
             int novaQuantidade = estoque.getQuantidade() - dto.getQuantidade();
 
             if (novaQuantidade < 0) {
-
                 throw new RuntimeException(
                         "Estoque insuficiente para o produto: " + produto.getNome() +
                                 " (Lote: " + dto.getLote() + "). " +
@@ -91,6 +92,22 @@ public class MovimentacaoService {
                 .observacao(dto.getObservacao())
                 .build();
 
-        movimentacaoRepository.save(log);
+        return movimentacaoRepository.save(log);
     }
+
+    @Transactional(readOnly = true)
+    public List<Movimentacao> buscarTodas() {
+        return movimentacaoRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Movimentacao> buscarPorId(Long id) {
+        return movimentacaoRepository.findById(id);
+    }
+
+    @Transactional
+    public void deletarPorId(Long id) {
+        movimentacaoRepository.deleteById(id);
+    }
+
 }
