@@ -18,13 +18,6 @@ public class EstoqueViewController {
         this.estoqueService = estoqueService;
     }
 
-    @GetMapping
-    public String listarEstoques(Model model) {
-        List<Estoque> estoques = estoqueService.listarTodos();
-        model.addAttribute("estoques", estoques);
-        return "lista-estoques"; // nome do template em src/main/resources/templates
-    }
-
     @GetMapping("/detalhes/{id}")
     public String detalhesEstoque(@PathVariable Long id, Model model) {
         Estoque estoque = estoqueService.buscarPorId(id)
@@ -34,5 +27,11 @@ public class EstoqueViewController {
         }
         model.addAttribute("estoque", estoque);
         return "detalhes-estoque";
+    }
+
+    @GetMapping
+    public String consultarEstoque(Model model) {
+        model.addAttribute("estoques", estoqueService.listarTodos());
+        return "consultar-estoque";
     }
 }
