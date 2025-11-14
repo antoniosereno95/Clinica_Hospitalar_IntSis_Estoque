@@ -31,7 +31,7 @@ public class ProdutoService {
         Optional<Produto> produtoExistenteOpt = buscarPorId(id);
 
         if (produtoExistenteOpt.isEmpty()) {
-            return Optional.empty(); // Retorna Optional vazio se não encontrar
+            return Optional.empty();
         }
 
         Produto produtoExistente = produtoExistenteOpt.get();
