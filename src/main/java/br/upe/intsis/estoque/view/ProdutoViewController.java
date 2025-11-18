@@ -48,7 +48,7 @@ public class ProdutoViewController {
 
     @PostMapping("/deletar/{id}")
     public String deletarProduto(@PathVariable Long id) {
-        produtoService.deletar(id);
+        produtoService.deletarProdutoComDependencias(id);
         return "redirect:/produtos";
     }
 }

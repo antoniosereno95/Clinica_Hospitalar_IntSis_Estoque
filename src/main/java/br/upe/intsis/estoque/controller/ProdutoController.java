@@ -59,12 +59,8 @@ public class ProdutoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarProduto(@PathVariable Long id) {
-        boolean deletado = produtoService.deletar(id);
-
-        if (deletado) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        produtoService.deletarProdutoComDependencias(id);
+        return ResponseEntity.noContent().build();
     }
+
 }

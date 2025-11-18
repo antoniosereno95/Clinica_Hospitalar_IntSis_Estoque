@@ -1,6 +1,7 @@
 package br.upe.intsis.estoque.repository;
 
 import br.upe.intsis.estoque.model.Movimentacao;
+import br.upe.intsis.estoque.model.Produto;
 import br.upe.intsis.estoque.model.TipoMovimentacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,5 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long
 
     List<Movimentacao> findByTipo(TipoMovimentacao tipo);
 
+    void deleteAllByProduto(Produto produto);
 }

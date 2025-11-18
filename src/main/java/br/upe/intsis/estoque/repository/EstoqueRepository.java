@@ -18,5 +18,7 @@ public interface EstoqueRepository extends JpaRepository<Estoque, Long> {
     List<Estoque> findByProdutoId(Long produtoId);
 
     List<Estoque> findByProdutoIdAndLocalizacao(Long produtoId, String localizacao);
+
+    void deleteAllByProduto(Produto produto);
 }
 
