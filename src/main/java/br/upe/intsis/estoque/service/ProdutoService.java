@@ -5,14 +5,24 @@ import br.upe.intsis.estoque.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import br.upe.intsis.estoque.repository.EstoqueRepository;
+import br.upe.intsis.estoque.repository.MovimentacaoRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
+    private final EstoqueRepository estoqueRepository;
+    private final MovimentacaoRepository movimentacaoRepository;
 
-    public ProdutoService(ProdutoRepository produtoRepository) {
+    public ProdutoService(ProdutoRepository produtoRepository,
+                          EstoqueRepository estoqueRepository,
+                          MovimentacaoRepository movimentacaoRepository) {
         this.produtoRepository = produtoRepository;
+        this.estoqueRepository = estoqueRepository;
+        this.movimentacaoRepository = movimentacaoRepository;
     }
 
     public Produto salvar(Produto produto) {
@@ -31,7 +41,7 @@ public class ProdutoService {
         Optional<Produto> produtoExistenteOpt = buscarPorId(id);
 
         if (produtoExistenteOpt.isEmpty()) {
-            return Optional.empty(); // Retorna Optional vazio se não encontrar
+            return Optional.empty();
         }
 
         Produto produtoExistente = produtoExistenteOpt.get();
@@ -46,14 +56,14 @@ public class ProdutoService {
         return Optional.of(produtoRepository.save(produtoExistente));
     }
 
-    public boolean deletar(Long id) {
-        Optional<Produto> produtoOpt = buscarPorId(id);
+    @Transactional
+    public void deletarProdutoComDependencias(Long produtoId) {
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
 
-        if (produtoOpt.isPresent()) {
-            produtoRepository.delete(produtoOpt.get());
-            return true;
-        }
-        return false;
+        movimentacaoRepository.deleteAllByProduto(produto);
+        estoqueRepository.deleteAllByProduto(produto);
+        produtoRepository.delete(produto);
     }
     
 }

@@ -4,12 +4,10 @@ import br.upe.intsis.estoque.model.Produto;
 import br.upe.intsis.estoque.service.ProdutoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/produtos") //Rota base mais amigável sem o "api" para evitar ambiguidade com o REST API
+@RequestMapping("/produtos")
 public class ProdutoViewController {
 
     private final ProdutoService produtoService;
@@ -18,18 +16,13 @@ public class ProdutoViewController {
         this.produtoService = produtoService;
     }
 
-    @GetMapping("/detalhes/{id}") //Nova rota "detalhes" para View
+    @GetMapping("/detalhes/{id}")
     public String buscarProdutoParaView(@PathVariable Long id, Model model) {
-
-        Produto produto = produtoService.buscarPorId(id)
-                .orElse(null);
-
+        Produto produto = produtoService.buscarPorId(id).orElse(null);
         if (produto == null) {
             return "erro/404";
         }
-
         model.addAttribute("produto", produto);
-
         return "detalhes-produto";
     }
 
@@ -39,4 +32,23 @@ public class ProdutoViewController {
         return "lista-produtos";
     }
 
+    @GetMapping("/novo")
+    public String novoProdutoForm(Model model) {
+        model.addAttribute("produto", new Produto());
+        return "novo-produto";
+    }
+
+
+    @PostMapping("/novo")
+    public String salvarNovoProduto(@ModelAttribute Produto produto) {
+        produtoService.salvar(produto);
+        return "redirect:/produtos";
+    }
+
+
+    @PostMapping("/deletar/{id}")
+    public String deletarProduto(@PathVariable Long id) {
+        produtoService.deletarProdutoComDependencias(id);
+        return "redirect:/produtos";
+    }
 }
