@@ -42,15 +42,22 @@ public class Consumer {
                 );
 
                 //Envia a resposta de status para o sistema de consultas
-                producer.sendJson(outputDataEstoqueConsulta);
+                producer.sendJsonConsulta(outputDataEstoqueConsulta);
 
 
             }else{
                 //Enviamos a Solicitação de Novos Materiais para o Financeiro
                 successStatus = false;
 
-                OutputData_Estoque_Financeiro outputDataEstoqueFinanceiro = new OutputData_Estoque_Financeiro();
+                OutputData_Estoque_Financeiro outputDataEstoqueFinanceiro = new OutputData_Estoque_Financeiro(
+                        inputData_Consulta_Estoque.getMoneyAmount(), inputData_Consulta_Estoque.getItem() ,
+                        inputData_Consulta_Estoque.getCategory() , inputData_Consulta_Estoque.getJustification() ,
+                        inputData_Consulta_Estoque.getQuantity() , inputData_Consulta_Estoque.getDescription()
+                );
 
+
+                //Envia a resposta de status para o sistema de consultas
+                producer.sendJsonFinanceiro(outputDataEstoqueFinanceiro);
             }
 
         } catch (Exception e) {

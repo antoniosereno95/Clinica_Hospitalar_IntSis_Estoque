@@ -10,7 +10,7 @@ public class InputData_Consulta_Estoque {
     private String budgetItemId;
     private BigDecimal moneyAmount;
     private String item;
-    private String category;
+    private CategoriaProduto category;
     private String justification;
     private Integer quantity;
     private String description;
@@ -22,7 +22,7 @@ public class InputData_Consulta_Estoque {
     }
 
     //Construtor completo
-    public InputData_Consulta_Estoque(String id, String budgetItemId, BigDecimal moneyAmount, String item, String category, String justification, Integer quantity, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public InputData_Consulta_Estoque(String id, String budgetItemId, BigDecimal moneyAmount, String item, CategoriaProduto category, String justification, Integer quantity, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.budgetItemId = budgetItemId;
         this.moneyAmount = moneyAmount;
@@ -68,11 +68,11 @@ public class InputData_Consulta_Estoque {
         this.item = item;
     }
 
-    public String getCategory() {
+    public CategoriaProduto getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(CategoriaProduto category) {
         this.category = category;
     }
 
