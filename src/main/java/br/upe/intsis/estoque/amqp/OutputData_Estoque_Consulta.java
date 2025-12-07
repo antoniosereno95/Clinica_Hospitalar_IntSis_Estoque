@@ -1,22 +1,16 @@
 package br.upe.intsis.estoque.amqp;
 
-public class OutputData {
+public class OutputData_Estoque_Consulta {
 
     private String processedId;
-    private String statusMessage;
     private boolean success;
 
-    public OutputData() {
-    }
-
-    public OutputData(String processedId, String statusMessage) {
+    public OutputData_Estoque_Consulta(String processedId, boolean success) {
         this.processedId = processedId;
-        this.statusMessage = statusMessage;
         this.success = true;
     }
 
     // Getters e Setters necessários para o Jackson
-
     public String getProcessedId() {
         return processedId;
     }
@@ -25,13 +19,6 @@ public class OutputData {
         this.processedId = processedId;
     }
 
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
-    public void setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
-    }
 
     public boolean isSuccess() {
         return success;
@@ -45,7 +32,6 @@ public class OutputData {
     public String toString() {
         return "OutputData{" +
                 "processedId='" + processedId + '\'' +
-                ", statusMessage='" + statusMessage + '\'' +
                 ", success=" + success +
                 '}';
     }

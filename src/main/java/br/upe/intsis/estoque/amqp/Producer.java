@@ -17,17 +17,17 @@ public class Producer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendJson(OutputData outputData) {
-        log.info("Enviando JSON para a fila {}: {}", RabbitMQConfig.QUEUE_ENVIO, outputData.toString());
+    public void sendJson(OutputData_Estoque_Consulta outputDataEstoqueConsulta) {
+        log.info("Enviando JSON para a fila {}: {}", RabbitMQConfig.QUEUE_RETORNO, outputDataEstoqueConsulta.toString());
 
         // O convertAndSend usa o conversor JSON configurado para serializar o objeto
         // 1º: Exchange (o mesmo que a fila está ligada)
         // 2º: Routing Key (igual ao nome da fila de destino no Direct Exchange)
         // 3º: O Objeto Java (será serializado para JSON)
         rabbitTemplate.convertAndSend(
-                RabbitMQConfig.EXCHANGE_NAME,
-                RabbitMQConfig.QUEUE_ENVIO,
-                outputData
+                RabbitMQConfig.EXCHANGE_ESTOQUE,
+                RabbitMQConfig.QUEUE_RETORNO,
+                outputDataEstoqueConsulta
         );
     }
 }

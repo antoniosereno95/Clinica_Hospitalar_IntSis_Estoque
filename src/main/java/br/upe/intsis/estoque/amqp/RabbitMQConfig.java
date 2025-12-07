@@ -17,43 +17,6 @@ public class RabbitMQConfig {
         return new Jackson2JsonMessageConverter();
     }
 
-    //Nomes das Filas Exemplo
-    public static final String QUEUE_RECEBIMENTO = "fila.recebimento.json";
-    public static final String QUEUE_ENVIO = "fila.envio.json";
-    public static final String EXCHANGE_NAME = "meu.exchange";
-
-    //Fila de Recebimento
-    @Bean
-    public Queue recebimentoQueue() {
-        return new Queue(QUEUE_RECEBIMENTO, true); // true = fila persistente
-    }
-
-    //Fila de Envio
-    @Bean
-    public Queue envioQueue() {
-        return new Queue(QUEUE_ENVIO, true);
-    }
-
-    //Exchange
-    @Bean
-    public Exchange exchange() {
-        return new DirectExchange(EXCHANGE_NAME);
-    }
-
-    //Liga a Fila de Recebimento ao Exchange
-    @Bean
-    public Binding recebimentoBinding(Queue recebimentoQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(recebimentoQueue).to(exchange).with(QUEUE_RECEBIMENTO); // Usa o nome da fila como Routing Key
-    }
-
-    //Liga a Fila de Envio ao Exchange
-    @Bean
-    public Binding envioBinding(Queue envioQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(envioQueue).to(exchange).with(QUEUE_ENVIO);
-    }
-
-
-
     //RabbitTemplate para usar o conversor JSON
     @Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
@@ -63,11 +26,12 @@ public class RabbitMQConfig {
     }
 
 
+
     // -----------------------------################----------------------------------
-    //Fila de RECEBIMENTO DA SOLICITAsAO DE MATERIAIS DO SISTEMA DE CONSULTAS
+    //Fila de RECEBIMENTO DA SOLICITACAO DE MATERIAIS DO SISTEMA DE CONSULTAS
     // -----------------------------################----------------------------------
 
-    // NOVAS CHAVES (Entrada para Estoque)
+    //CHAVES (Entrada para Estoque)
     public static final String EXCHANGE_ESTOQUE = "appointments.estoque";
     public static final String ROUTING_KEY_ESTOQUE = "appointments.confirmed.estoque";
     public static final String QUEUE_ESTOQUE = "estoque.resource.input"; // Nova Fila de Recebimento
@@ -80,7 +44,7 @@ public class RabbitMQConfig {
 
     //NOVO Exchange (usando TopicExchange, que é mais flexível para chaves diversas)
     @Bean
-    public Exchange estoqueExchange() {
+    public TopicExchange estoqueExchange() {
         return new TopicExchange(EXCHANGE_ESTOQUE);
     }
 
@@ -90,8 +54,32 @@ public class RabbitMQConfig {
         // A fila é ligada usando a Routing Key completa
         return BindingBuilder.bind(estoqueQueue).to(estoqueExchange).with(ROUTING_KEY_ESTOQUE);
     }
-
     // -----------------------------################----------------------------------
 
+    // -----------------------------################----------------------------------
+    //Fila de Envio do Retorno DA SOLICITACAO DE MATERIAIS DO SISTEMA DE CONSULTAS
+    // -----------------------------################----------------------------------
+
+    //CHAVES (Retorno para Consultas)
+    public static final String QUEUE_RETORNO = "retorno.estoque.status";
+
+    //Fila de Retorno/Saída
+    @Bean
+    public Queue retornoQueue() {
+        return new Queue(QUEUE_RETORNO, true);
+    }
+
+    //Exchange de Retorno (TopicExchange é um bom padrão)
+    @Bean
+    public Exchange retornoExchange() {
+        return new TopicExchange(EXCHANGE_ESTOQUE);
+    }
+
+    //Liga a Fila de Retorno ao Exchange de Retorno
+    @Bean
+    public Binding retornoBinding(Queue retornoQueue, TopicExchange retornoExchange) {
+        return BindingBuilder.bind(retornoQueue).to(retornoExchange).with(ROUTING_KEY_ESTOQUE);
+    }
+    // -----------------------------################----------------------------------
 
 }
