@@ -21,36 +21,50 @@ public class Consumer {
         //Variável para armazenar o resultado da verificação de estoque
         Boolean successStatus = false;
 
-        // Tente processar o estoque na "->>> LÓGICA DE VERIFICAÇÃO E ATUALIZAÇÃO DO ESTOQUE <<<-"
         try {
+
             // ->>> LÓGICA DE VERIFICAÇÃO E ATUALIZAÇÃO DO ESTOQUE <<<-
 
             // *****************************************************************
             // A PESSOA QUE FOR DESENVOLVER A LÓGICA DEVE MUDAR ESTE BLOCO:
             // *****************************************************************
-
-            // Exemplo da Lógica: Se o item existir no estoque e a quantidade for suficiente, defina como true
-            boolean estoqueVerificado = true;
-            if (estoqueVerificado) {
-                successStatus = true;
-            }
-
             // *****************************************************************
+
+            if (successStatus) {
+
+                //Enviamos a confirmação para o sistema de Consulta
+                successStatus = true;
+
+                //Cria o objeto de retorno usando a variável 'successStatus'
+                OutputData_Estoque_Consulta outputDataEstoqueConsulta = new OutputData_Estoque_Consulta(
+                        inputData_Consulta_Estoque.getId(),
+                        successStatus
+                );
+
+                //Envia a resposta de status para o sistema de consultas
+                producer.sendJsonConsulta(outputDataEstoqueConsulta);
+
+
+            }else{
+                //Enviamos a Solicitação de Novos Materiais para o Financeiro
+                successStatus = false;
+
+                OutputData_Estoque_Financeiro outputDataEstoqueFinanceiro = new OutputData_Estoque_Financeiro(
+                        inputData_Consulta_Estoque.getMoneyAmount(), inputData_Consulta_Estoque.getItem() ,
+                        inputData_Consulta_Estoque.getCategory() , inputData_Consulta_Estoque.getJustification() ,
+                        inputData_Consulta_Estoque.getQuantity() , inputData_Consulta_Estoque.getDescription()
+                );
+
+
+                //Envia a resposta de status para o sistema de consultas
+                producer.sendJsonFinanceiro(outputDataEstoqueFinanceiro);
+            }
 
         } catch (Exception e) {
             log.error("Erro ao processar estoque para ID {}: {}", inputData_Consulta_Estoque.getId(), e.getMessage());
             successStatus = false;
         }
 
-
-        //Cria o objeto de retorno usando a variável 'successStatus'
-        OutputData_Estoque_Consulta outputDataEstoqueConsulta = new OutputData_Estoque_Consulta(
-                inputData_Consulta_Estoque.getId(),
-                successStatus
-        );
-
-        //Envia a resposta de status para o sistema de consultas
-        producer.sendJson(outputDataEstoqueConsulta);
     }
 
 }

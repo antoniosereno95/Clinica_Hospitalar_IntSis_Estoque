@@ -82,4 +82,35 @@ public class RabbitMQConfig {
     }
     // -----------------------------################----------------------------------
 
+
+    // -----------------------------################----------------------------------
+    // Fila de Envio do Financeiro
+    // -----------------------------################----------------------------------
+
+    //CHAVES (Envio para o Financeiro)
+    public static final String EXCHANGE_FINANCEIRO = "resources.request.finance";
+    public static final String ROUTING_KEY_FINANCEIRO = "resources.request.finance";
+    //A fila que o Financeiro CUMPRE O PAPEL DE CONSUMIR
+    public static final String QUEUE_FINANCEIRO_REQUEST = "financeiro.resource.request";
+
+    //Cria a Fila de Envio (a que o sistema Financeiro irá escutar)
+    @Bean
+    public Queue financeiroRequestQueue() {
+        return new Queue(QUEUE_FINANCEIRO_REQUEST, true);
+    }
+
+    //Cria o Exchange de Envio
+    @Bean
+    public Exchange financeiroExchange() {
+        return new TopicExchange(EXCHANGE_FINANCEIRO);
+    }
+
+    //Liga a Fila de Envio ao Exchange
+    @Bean
+    public Binding financeiroBinding(Queue financeiroRequestQueue, TopicExchange financeiroExchange) {
+        return BindingBuilder.bind(financeiroRequestQueue).to(financeiroExchange).with(ROUTING_KEY_FINANCEIRO);
+    }
+    // -----------------------------################----------------------------------
+
+
 }
