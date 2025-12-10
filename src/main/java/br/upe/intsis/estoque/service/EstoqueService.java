@@ -1,5 +1,6 @@
 package br.upe.intsis.estoque.service;
 
+import br.upe.intsis.estoque.amqp.InputData_Consulta_Estoque;
 import br.upe.intsis.estoque.model.Estoque;
 import br.upe.intsis.estoque.model.Produto;
 import br.upe.intsis.estoque.repository.EstoqueRepository;
@@ -78,5 +79,21 @@ public class EstoqueService {
 
         estoque.setQuantidade(novaQuantidade);
         return estoqueRepository.save(estoque);
+    }
+
+
+    public boolean verificaEstoque(InputData_Consulta_Estoque inputData_Consulta_Estoque) {
+
+        int contadorChamadas = 0;
+
+        contadorChamadas++;
+
+        boolean resultado;
+        if (contadorChamadas % 3 == 0) {
+            resultado = false;
+        } else {
+            resultado = true;
+        }
+        return resultado;
     }
 }
