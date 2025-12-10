@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import br.upe.intsis.estoque.service.*;
 
 @Component
 public class Consumer {
@@ -14,11 +15,13 @@ public class Consumer {
     @Autowired
     private Producer producer;
 
+    @Autowired
+    private EstoqueService estoque;
+
     @RabbitListener(queues = RabbitMQConfig.QUEUE_ESTOQUE)
     public void receiveJson(InputData_Consulta_Estoque inputData_Consulta_Estoque) {
         log.info("Recurso recebido na fila de Estoque: {}", inputData_Consulta_Estoque.toString());
 
-        //Variável para armazenar o resultado da verificação de estoque
         Boolean successStatus = false;
 
         try {
@@ -29,6 +32,8 @@ public class Consumer {
             // A PESSOA QUE FOR DESENVOLVER A LÓGICA DEVE MUDAR ESTE BLOCO:
             // *****************************************************************
             // *****************************************************************
+
+            successStatus = estoque.verificaEstoque(inputData_Consulta_Estoque);
 
             if (successStatus) {
 
@@ -67,4 +72,7 @@ public class Consumer {
 
     }
 
+
 }
+
+
