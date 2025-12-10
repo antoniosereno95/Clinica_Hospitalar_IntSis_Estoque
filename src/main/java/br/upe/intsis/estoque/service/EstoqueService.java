@@ -81,7 +81,32 @@ public class EstoqueService {
         return estoqueRepository.save(estoque);
     }
 
+    @Transactional(readOnly = true)
+    public boolean verificaEstoquePorNomeEQuantidade(String item , Integer quantidade) {
 
+        if (quantidade == null || quantidade <= 0) {
+            throw new IllegalArgumentException("A quantidade requerida deve ser positiva.");
+        }
+
+        Optional<Produto> produtoOpt = produtoRepository.findByNome(item);
+
+        if (produtoOpt.isEmpty()) {
+            System.out.println("Produto '" + item + "' não encontrado no cadastro.");
+            return false;
+        }
+
+        Produto produto = produtoOpt.get();
+
+        Optional<Integer> totalEstoqueOpt = estoqueRepository.calcularTotalEstoquePorProduto(produto.getId());
+
+        int quantidadeDisponivel = totalEstoqueOpt.orElse(0);
+
+        boolean disponivel = quantidadeDisponivel >= quantidade;
+
+        return disponivel;
+    }
+
+    //para teste
     public boolean verificaEstoque(InputData_Consulta_Estoque inputData_Consulta_Estoque) {
 
         int contadorChamadas = 0;
