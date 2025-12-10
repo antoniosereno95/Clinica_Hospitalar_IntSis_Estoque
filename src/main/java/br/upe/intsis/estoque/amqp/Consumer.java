@@ -39,10 +39,6 @@ public class Consumer {
 
             //->> Envio das Mensagem RabbitMQ <<-
             if (successStatus) {
-
-                //Enviamos a confirmação para o sistema de Consulta
-                successStatus = true;
-
                 //Cria o objeto de retorno usando a variável 'successStatus'
                 OutputData_Estoque_Consulta outputDataEstoqueConsulta = new OutputData_Estoque_Consulta(
                         inputData_Consulta_Estoque.getId(),
@@ -55,8 +51,6 @@ public class Consumer {
 
             }else{
                 //Enviamos a Solicitação de Novos Materiais para o Financeiro
-                successStatus = false;
-
                 OutputData_Estoque_Financeiro outputDataEstoqueFinanceiro = new OutputData_Estoque_Financeiro(
                         inputData_Consulta_Estoque.getMoneyAmount(), inputData_Consulta_Estoque.getItem() ,
                         inputData_Consulta_Estoque.getCategory() , inputData_Consulta_Estoque.getJustification() ,

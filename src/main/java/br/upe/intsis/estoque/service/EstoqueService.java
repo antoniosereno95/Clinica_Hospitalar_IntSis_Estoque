@@ -88,6 +88,7 @@ public class EstoqueService {
             throw new IllegalArgumentException("A quantidade requerida deve ser positiva.");
         }
 
+        //Busca Produto pelo Nome
         Optional<Produto> produtoOpt = produtoRepository.findByNome(item);
 
         if (produtoOpt.isEmpty()) {
@@ -96,14 +97,58 @@ public class EstoqueService {
         }
 
         Produto produto = produtoOpt.get();
+        Long produtoId = produto.getId();
+        int quantidadeRequerida = quantidade;
 
-        Optional<Integer> totalEstoqueOpt = estoqueRepository.calcularTotalEstoquePorProduto(produto.getId());
-
+        //Calcula a Quantidade Total Disponível
+        Optional<Integer> totalEstoqueOpt = estoqueRepository.calcularTotalEstoquePorProduto(produtoId);
         int quantidadeDisponivel = totalEstoqueOpt.orElse(0);
 
-        boolean disponivel = quantidadeDisponivel >= quantidade;
+        //Verifica Suficiência
+        if (quantidadeDisponivel < quantidadeRequerida) {
+            System.out.printf(
+                    "Estoque Insuficiente: Produto=%s, Disponível=%d, Requerido=%d%n",
+                    item, quantidadeDisponivel, quantidadeRequerida
+            );
+            return false;
+        }
 
-        return disponivel;
+        //Busca os registros ordenados pela validade mais próxima
+        List<Estoque> estoques = estoqueRepository.findByProdutoIdOrderByDataValidadeAsc(produtoId);
+
+        int restanteParaBaixa = quantidadeRequerida;
+
+        for (Estoque estoque : estoques) {
+            if (restanteParaBaixa <= 0) {
+                break;
+            }
+
+            int quantidadeNoLote = estoque.getQuantidade();
+
+            if (quantidadeNoLote <= 0) {
+                continue;
+            }
+
+            int quantidadeARetirar = Math.min(restanteParaBaixa, quantidadeNoLote);
+
+            //Atualiza o saldo do lote
+            int novoSaldo = quantidadeNoLote - quantidadeARetirar;
+            estoque.setQuantidade(novoSaldo);
+
+            //Salva a alteração no bd
+            estoqueRepository.save(estoque);
+
+            // tualiza a quantidade restante
+            restanteParaBaixa -= quantidadeARetirar;
+        }
+
+        //Se chegar aqui, a baixa foi realizada com sucesso
+        System.out.printf(
+                "Baixa realizada com sucesso: Produto=%s, Quantidade Retirada=%d%n",
+                item, quantidadeRequerida
+        );
+
+        return true;
     }
 
     //para teste
