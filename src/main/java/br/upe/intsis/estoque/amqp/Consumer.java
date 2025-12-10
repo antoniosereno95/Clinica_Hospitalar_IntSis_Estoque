@@ -26,15 +26,18 @@ public class Consumer {
 
         try {
 
-            // ->>> LÓGICA DE VERIFICAÇÃO E ATUALIZAÇÃO DO ESTOQUE <<<-
+            //INICIO: ->>> LÓGICA DE VERIFICAÇÃO E ATUALIZAÇÃO DO ESTOQUE <<<-
+            try {
+                //log.error("Deu certo a ->>> LÓGICA DE VERIFICAÇÃO E ATUALIZAÇÃO DO ESTOQUE <<<-");
+                successStatus = estoque.verificaEstoquePorNomeEQuantidade(inputData_Consulta_Estoque.getItem(), inputData_Consulta_Estoque.getQuantity());
+            }catch (Exception e) {
+                log.error("Erro na ->>> LÓGICA DE VERIFICAÇÃO E ATUALIZAÇÃO DO ESTOQUE <<<-");
+                successStatus = estoque.verificaEstoque(inputData_Consulta_Estoque);
+            }
+            //FIM:  ->>> LÓGICA DE VERIFICAÇÃO E ATUALIZAÇÃO DO ESTOQUE <<<-
 
-            // *****************************************************************
-            // A PESSOA QUE FOR DESENVOLVER A LÓGICA DEVE MUDAR ESTE BLOCO:
-            // *****************************************************************
-            // *****************************************************************
 
-            successStatus = estoque.verificaEstoque(inputData_Consulta_Estoque);
-
+            //->> Envio das Mensagem RabbitMQ <<-
             if (successStatus) {
 
                 //Enviamos a confirmação para o sistema de Consulta
@@ -66,8 +69,7 @@ public class Consumer {
             }
 
         } catch (Exception e) {
-            log.error("Erro ao processar estoque para ID {}: {}", inputData_Consulta_Estoque.getId(), e.getMessage());
-            successStatus = false;
+            log.error("ERRO: NENHUMA MENSAGEM FOI ENVIADA PELO RABBITMQ - Erro ao processar estoque para ID {}: {}", inputData_Consulta_Estoque.getId(), e.getMessage());
         }
 
     }
