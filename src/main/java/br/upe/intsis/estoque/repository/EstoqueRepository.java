@@ -25,5 +25,7 @@ public interface EstoqueRepository extends JpaRepository<Estoque, Long> {
 
     @Query("SELECT SUM(e.quantidade) FROM Estoque e WHERE e.produto.id = :produtoId")
     Optional<Integer> calcularTotalEstoquePorProduto(@Param("produtoId") Long produtoId);
+
+    List<Estoque> findByProdutoIdOrderByDataValidadeAsc(Long produtoId);
 }
 
