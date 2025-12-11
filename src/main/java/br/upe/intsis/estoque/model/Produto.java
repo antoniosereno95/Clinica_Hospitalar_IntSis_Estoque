@@ -117,20 +117,3 @@ public class Produto {
     }
 }
 
-enum UnidadeMedida {
-    UNIDADE,
-    CAIXA,
-    PACOTE,
-    FRASCO,
-    LITRO,
-    MILILITRO,
-    METRO
-}
-
-enum CategoriaProduto {
-    MEDICAMENTO,
-    INSUMO,
-    EQUIPAMENTO_DESCARTAVEL,
-    LIMPEZA,
-    MATERIA_PRIMA
-}
